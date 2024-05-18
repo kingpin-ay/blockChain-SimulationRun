@@ -1,4 +1,7 @@
 /target
-/key
-/assets
+/key/private_key.pem
+/key/public_key.pem
+/assets/*
+/encrypted/*
+/decrypted/*
 Cargo.lock
