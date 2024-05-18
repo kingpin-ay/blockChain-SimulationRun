@@ -1,6 +1,7 @@
 use rand::rngs::OsRng;
-use rsa::pkcs1::{DecodeRsaPublicKey, EncodeRsaPrivateKey, EncodeRsaPublicKey};
-use rsa::pkcs8::DecodePrivateKey;
+use rsa::pkcs1::{
+    DecodeRsaPrivateKey, DecodeRsaPublicKey, EncodeRsaPrivateKey, EncodeRsaPublicKey,
+};
 use rsa::Pkcs1v15Encrypt;
 use rsa::{RsaPrivateKey, RsaPublicKey};
 use std::error::Error;
@@ -30,16 +31,6 @@ pub fn generate_rsa_key_pair(
     let _ = public_key_file.write_all(public_pem.as_bytes());
 
     Ok(())
-}
-
-pub fn testing(file_path: &str) {
-    println!("hello world");
-    let mut file = File::open(file_path).unwrap();
-    let mut buffer = Vec::new();
-    let _ = file.read_to_end(&mut buffer);
-    // for number in &buffer {
-    //     println!("file data {}", number);
-    // }
 }
 
 fn read_from_file(file_path: &str) -> Vec<u8> {
@@ -83,7 +74,7 @@ pub fn encrypt_file_with_public_key(
     Ok(())
 }
 
-fn decrypt_file_with_private_key(
+pub fn decrypt_file_with_private_key(
     encrypted_file_path: &str,
     private_key_path: &str,
     output_path: &str,
@@ -91,20 +82,35 @@ fn decrypt_file_with_private_key(
     // Read the private key from the PEM file
     let private_key_pem = match std::fs::read_to_string(private_key_path) {
         Ok(contents) => contents,
-        Err(err) => return Err(Box::new(err)),
+        Err(err) => {
+            println!("wasn't able to read private_key_pem");
+            return Err(Box::new(err));
+        }
     };
-    let private_key = match RsaPrivateKey::from_pkcs8_pem(&private_key_pem) {
+    let private_key = match RsaPrivateKey::from_pkcs1_pem(&private_key_pem) {
         Ok(contents) => contents,
-        Err(err) => return Err(Box::new(err)),
+        Err(err) => {
+            println!("wasn't able to convert the private_key_pem into a pem format");
+            return Err(Box::new(err));
+        }
     };
 
     // Open and read the encrypted file contents into a buffer
-    let mut encrypted_file = File::open(encrypted_file_path)?;
+    let mut encrypted_file = match File::open(encrypted_file_path) {
+        Ok(contents) => contents,
+        Err(_error) => File::create_new(encrypted_file_path)?,
+    };
     let mut encrypted_buffer = Vec::new();
     encrypted_file.read_to_end(&mut encrypted_buffer)?;
 
     // Decrypt the buffer using the private key
-    let decrypted_data = private_key.decrypt(Pkcs1v15Encrypt, &encrypted_buffer)?;
+    let decrypted_data = match private_key.decrypt(Pkcs1v15Encrypt, &encrypted_buffer) {
+        Ok(content) => content,
+        Err(err) => {
+            println!("Decryption of file failed ->  {}", err);
+            return Err(Box::new(err));
+        }
+    };
 
     // Write the decrypted data to the output file
     let mut output_file = File::create(output_path)?;

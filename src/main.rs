@@ -60,13 +60,14 @@ fn generate_key(private_key_path: &str, public_key_path: &str) {
 
 fn encrypt_file(public_key_path: &str) {
     let (file_path, encrypted_path) = take_file_input(Cryptography::ENCRYPTION);
-
     let _some_variable =
         basic::encrypt_file_with_public_key(&file_path, public_key_path, &encrypted_path);
 }
 
 fn decrypt_file(private_key_path: &str) {
     let (file_path, decrypted_path) = take_file_input(Cryptography::DECRYPTION);
+    let _some_variable =
+        basic::decrypt_file_with_private_key(&file_path, private_key_path, &decrypted_path);
 }
 
 fn take_file_input(action_type: Cryptography) -> (String, String) {
@@ -93,7 +94,10 @@ fn take_file_input(action_type: Cryptography) -> (String, String) {
                     );
                 }
             };
-            return (file_path, encrypted_path);
+            return (
+                file_path.trim().to_string(),
+                encrypted_path.trim().to_string(),
+            );
         }
         Cryptography::DECRYPTION => {
             println!("Enter the decrypted file path: ");
@@ -106,7 +110,10 @@ fn take_file_input(action_type: Cryptography) -> (String, String) {
                     );
                 }
             };
-            return (file_path, decrypted_path);
+            return (
+                file_path.trim().to_string(),
+                decrypted_path.trim().to_string(),
+            );
         }
     }
 }
