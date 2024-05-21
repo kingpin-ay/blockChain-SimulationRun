@@ -37,6 +37,11 @@ fn read_from_file(file_path: &str) -> Vec<u8> {
     let mut file = File::open(file_path).unwrap();
     let mut buffer = Vec::new();
     let _ = file.read_to_end(&mut buffer);
+    // for number in &buffer {
+    //     println!("-> {}", number);
+    // }
+    //
+    // println!("size of the vector -> {}", buffer.len());
     return buffer;
 }
 
