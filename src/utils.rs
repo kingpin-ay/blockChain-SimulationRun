@@ -1,8 +1,9 @@
 use sha2::{Digest, Sha256};
-use std::fmt::Write;
+use std::{collections::HashMap, fmt::Write};
 
 pub fn split_vec(vec: Vec<u8>, split_factor: usize) {
     let chunks = vec.chunks(split_factor);
+    let mut storage: HashMap<String, &[u8]> = HashMap::new();
     for chunk in chunks {
         let mut hasher = Sha256::new();
         for &val in chunk {
@@ -14,7 +15,7 @@ pub fn split_vec(vec: Vec<u8>, split_factor: usize) {
         for byte in hash_result {
             write!(&mut hash_string, "{:02x}", byte).expect("Unable to write");
         }
-
         println!("Hash for chunk {:?}: {}", chunk, hash_string);
+        storage.insert(hash_string, chunk);
     }
 }
