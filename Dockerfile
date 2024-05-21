@@ -5,7 +5,7 @@ FROM rust:1.63-slim
 WORKDIR /usr/src/myapp
 
 # Copy the Cargo.toml and Cargo.lock files to the container
-COPY Cargo.toml Cargo.lock ./
+COPY Cargo.toml  ./
 
 # This build step is to cache dependencies
 RUN cargo fetch
