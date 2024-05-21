@@ -33,7 +33,7 @@ pub fn generate_rsa_key_pair(
     Ok(())
 }
 
-fn read_from_file(file_path: &str) -> Vec<u8> {
+pub fn read_from_file(file_path: &str) -> Vec<u8> {
     let mut file = File::open(file_path).unwrap();
     let mut buffer = Vec::new();
     let _ = file.read_to_end(&mut buffer);

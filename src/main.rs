@@ -1,5 +1,6 @@
 mod basic;
-use std::io;
+mod utils;
+use std::{io, usize};
 
 enum Cryptography {
     ENCRYPTION,
@@ -9,13 +10,13 @@ enum Cryptography {
 fn main() {
     const PRIVATE_KEY_PATH: &str = "key/private_key.pem";
     const PUBLIC_KEY_PATH: &str = "key/public_key.pem";
-
     loop {
         println!("Choose Functionality : ");
         println!("1. Generate Private key and Public key ");
         println!("2. Encrypt a File  ");
         println!("3. Decrypt a File  ");
-        println!("4. Exit   ");
+        println!("4. Hash chunk Of the file ");
+        println!("5. Exit   ");
         let mut user_input = String::new();
         let _ = match io::stdin().read_line(&mut user_input) {
             Ok(content) => content,
@@ -40,6 +41,8 @@ fn main() {
         } else if user_choice_number == 3 {
             decrypt_file(PRIVATE_KEY_PATH);
         } else if user_choice_number == 4 {
+            get_file_get_chunk_hash()
+        } else if user_choice_number == 5 {
             break;
         } else {
             println!("Please Select A valid Option");
@@ -116,4 +119,40 @@ fn take_file_input(action_type: Cryptography) -> (String, String) {
             );
         }
     }
+}
+
+fn get_file_get_chunk_hash() {
+    println!("Enter The Split Length ( t(x) ) : ");
+    let mut user_input = String::new();
+    let mut encrypted_path = String::new();
+    let _ = match io::stdin().read_line(&mut user_input) {
+        Ok(content) => content,
+        Err(error) => {
+            println!("this is the error -> {}", error);
+            return ();
+        }
+    };
+
+    let user_choice_number: i32 = match user_input.trim().parse() {
+        Ok(content) => content,
+        Err(_err) => {
+            println!("Parsing Failed , Please Enter a Valid Number.");
+            return ();
+        }
+    };
+
+    println!("Enter Encrypted File Address: ");
+    let _ = match io::stdin().read_line(&mut encrypted_path) {
+        Ok(_contents) => {}
+        Err(error) => {
+            println!(
+                "Was not able to take the encryption file path input -> {}",
+                error
+            );
+        }
+    };
+
+    let encrypted_path = encrypted_path.trim().to_string();
+    let file_in_vec = basic::read_from_file(&encrypted_path);
+    utils::split_vec(file_in_vec, user_choice_number as usize);
 }
