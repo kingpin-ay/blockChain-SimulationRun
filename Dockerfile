@@ -15,4 +15,4 @@ RUN cargo fetch
 RUN cargo build --release
 
 # Run the application
-CMD ["./target/release/blockChain-SimulationRun"]
+# CMD ["./target/release/blockChain-SimulationRun"]

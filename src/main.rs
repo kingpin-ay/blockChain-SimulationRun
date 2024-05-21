@@ -1,5 +1,6 @@
 mod basic;
 mod utils;
+use std::process::Command;
 use std::{io, usize};
 
 enum Cryptography {
@@ -16,7 +17,8 @@ fn main() {
         println!("2. Encrypt a File  ");
         println!("3. Decrypt a File  ");
         println!("4. Hash chunk Of the file ");
-        println!("5. Exit   ");
+        println!("5. Print File Contents ");
+        println!("6. Exit   ");
         let mut user_input = String::new();
         let _ = match io::stdin().read_line(&mut user_input) {
             Ok(content) => content,
@@ -43,6 +45,8 @@ fn main() {
         } else if user_choice_number == 4 {
             get_file_get_chunk_hash()
         } else if user_choice_number == 5 {
+            print_conent();
+        } else if user_choice_number == 6 {
             break;
         } else {
             println!("Please Select A valid Option");
@@ -155,4 +159,19 @@ fn get_file_get_chunk_hash() {
     let encrypted_path = encrypted_path.trim().to_string();
     let file_in_vec = basic::read_from_file(&encrypted_path);
     utils::split_vec(file_in_vec, user_choice_number as usize);
+}
+
+fn print_conent() {
+    const _ENCRYPTED_FILE: &str = "./encrypted/index.bin";
+    const ACTUAL_FILE: &str = "assets/example.txt";
+    println!("This is the actual file -> ");
+
+    let assest_file: String = match std::fs::read_to_string(ACTUAL_FILE) {
+        Ok(contents) => contents,
+        Err(err) => {
+            println!("error ->  {}", err);
+            return ();
+        }
+    };
+    println!("{}", assest_file);
 }
