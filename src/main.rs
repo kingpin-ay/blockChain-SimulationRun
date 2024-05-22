@@ -1,6 +1,5 @@
 mod basic;
 mod utils;
-use std::process::Command;
 use std::{io, usize};
 
 enum Cryptography {
